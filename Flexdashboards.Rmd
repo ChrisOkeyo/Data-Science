@@ -1,0 +1,130 @@
+---
+title: "Salaries for Professors"
+output: 
+  flexdashboard::flex_dashboard:
+    vertical_layout: scroll
+---
+
+
+```{r}
+rm(list = ls())
+
+ pkgs <- c("flexdashboard", "highcharter", "dplyr")
+
+# #Checking the packages that are not installed
+
+ miss_pkgs<-pkgs[!pkgs %in% installed.packages()[,1]]
+#
+#
+# #Install all the missing packages
+if(length(miss_pkgs)>0){
+
+   install.packages(miss_pkgs)
+ }
+#
+# # Loading all the packages
+ invisible(lapply(pkgs,library,character.only=TRUE))
+
+```
+
+```{r setup, include=FALSE}
+
+working_dir <- "/Users/busara/Desktop/Tina tins/Projects/Personal/Flexdashboards"
+
+knitr::opts_knit$set(root.dir = working_dir)
+
+
+```
+
+
+```{r}
+Salaries <- read.csv("Salaries.csv")
+```
+
+### Gender distribution of staff
+<b>blah blah blah</b>
+
+```{r}
+sex_df <- Salaries %>%
+  group_by(sex) %>%
+  summarise(total_count = n()) %>%
+  ungroup() %>%
+  mutate(percentage = total_count/sum(total_count)*100)
+
+sex <- 
+  highchart() %>%
+  hc_add_series(sex_df$percentage, type="column", showInLegend = FALSE) %>%
+  hc_xAxis(categories = unique(sex_df$sex)) %>%
+  hc_yAxis(title = list(text = "percentage")) %>%
+  hc_title(text = "Gender distribution")
+  
+
+sex
+
+```
+
+### Rank of all the professionals
+```{r}
+
+rank_df <- Salaries %>%
+  group_by(rank) %>%
+  summarise(total_count = n()) %>%
+  ungroup() %>%
+  mutate(percentage = total_count/sum(total_count)*100)
+
+rank <- 
+  highchart() %>%
+  hc_add_series(rank_df$percentage, type="column", showInLegend = FALSE) %>%
+  hc_xAxis(categories = unique(rank_df$rank)) %>%
+  hc_yAxis(title = list(text = "percentage")) %>%
+  hc_title(text = "Distribution of professionals")
+  
+
+rank
+
+
+```
+
+### Discpline distribution
+```{r}
+
+
+discipline_df <- Salaries %>%
+  group_by(discipline) %>%
+  summarise(total_count = n()) %>%
+  ungroup() %>%
+  mutate(percentage = total_count/sum(total_count)*100)
+
+discipline <- 
+  highchart() %>%
+  hc_add_series(discipline_df$percentage, type="column", showInLegend = FALSE) %>%
+  hc_xAxis(categories = unique(discipline_df$discipline)) %>%
+  hc_yAxis(title = list(text = "percentage")) %>%
+  hc_title(text = "Discipline")
+  
+
+discipline
+
+
+
+
+```
+
+
+
+### Chart B
+
+```{r}
+
+gender_discpline <- Salaries %>%
+  group_by(sex, rank) %>%
+  summarise(total_count=n())
+
+```
+
+### Chart C
+```{r}
+
+
+```
+
